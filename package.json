@@ -1,0 +1,64 @@
+{
+  "name": "at-astro",
+  "version": "0.0.1",
+  "private": false,
+  "description": "An Astro integration for the AT Protocol. Implements authentication and content loaders for ATProto records.",
+  "keywords": [
+    "astro",
+    "astro-integration",
+    "astro-loader",
+    "atproto",
+    "atprotocol",
+    "bluesky",
+    "content-collections",
+    "withastro"
+  ],
+  "homepage": "https://github.com/chrisvander/at-astro",
+  "repository": "git+https://github.com/chrisvander/at-astro.git",
+  "type": "module",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./auth": {
+      "types": "./dist/auth.d.mts",
+      "default": "./dist/auth.mjs"
+    },
+    "./pages/*": {
+      "types": "./dist/pages/*.d.mts",
+      "default": "./dist/pages/*.mjs"
+    },
+    "./pages/oauth/*": {
+      "types": "./dist/pages/oauth/*.d.mts",
+      "default": "./dist/pages/oauth/*.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "check": "tsc",
+    "test": "bun test",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
+  },
+  "dependencies": {
+    "@atproto/jwk-webcrypto": "^0.3.4",
+    "@atproto/oauth-client": "^0.8.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.0",
+    "oxfmt": "^0.64.0",
+    "oxlint": "^1.79.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "tsdown": "^0.22.14",
+    "typescript": "^7.0.2"
+  },
+  "peerDependencies": {
+    "@atproto/lex": "^0.3.6",
+    "astro": "^7.2.4"
+  }
+}
