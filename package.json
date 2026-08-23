@@ -27,6 +27,10 @@
       "types": "./dist/auth.d.mts",
       "default": "./dist/auth.mjs"
     },
+    "./middleware": {
+      "types": "./dist/middleware.d.mts",
+      "default": "./dist/middleware.mjs"
+    },
     "./pages/*": {
       "types": "./dist/pages/*.d.mts",
       "default": "./dist/pages/*.mjs"

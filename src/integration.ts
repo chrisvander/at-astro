@@ -105,6 +105,7 @@ export default function createPlugin(options?: AtAstroOptions): AstroIntegration
     hooks: {
       "astro:config:setup": ({
         injectRoute,
+        addMiddleware,
         updateConfig,
         config: astroConfig,
         command,
@@ -140,6 +141,11 @@ export default function createPlugin(options?: AtAstroOptions): AstroIntegration
           },
         })
 
+        addMiddleware({
+          order: "pre",
+          entrypoint: "at-astro/middleware",
+        })
+
         // Inject oauth-client-metadata
         injectRoute({
           pattern: "/oauth-client-metadata.json",
@@ -162,6 +168,16 @@ export default function createPlugin(options?: AtAstroOptions): AstroIntegration
           pattern: "/oauth/logout",
           entrypoint: "at-astro/pages/oauth/logout",
           prerender: false,
+        })
+      },
+      "astro:config:done": ({ injectTypes }) => {
+        injectTypes({
+          filename: "at-astro-locals.d.ts",
+          content: `declare namespace App {
+            interface Locals {
+              getATProtoClient: import("at-astro/middleware").GetATProtoClientFn
+            }
+          }`,
         })
       },
     },
