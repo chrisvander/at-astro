@@ -2,7 +2,6 @@ import { OAuthClient, type Key } from "@atproto/oauth-client"
 import { WebcryptoKey } from "@atproto/jwk-webcrypto"
 import type { SimpleStore } from "@atproto-labs/simple-store"
 import { config } from "at-astro:config"
-import * as _ from "./patched-fetch.ts"
 import type { AtAstroSession } from "../types/session.ts"
 
 async function importDpopKey(jwk: JsonWebKey) {
