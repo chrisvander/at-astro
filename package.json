@@ -2,15 +2,12 @@
   "name": "at-astro",
   "version": "1.0.1",
   "private": false,
-  "description": "An Astro integration for the AT Protocol. Implements authentication and content loaders for ATProto records.",
+  "description": "An Astro integration for the AT Protocol, implementing OAuth flow and publishing an authenticated client to fetch and mutate records.",
   "keywords": [
     "astro",
     "astro-integration",
-    "astro-loader",
     "atproto",
     "atprotocol",
-    "bluesky",
-    "content-collections",
     "withastro"
   ],
   "homepage": "https://github.com/chrisvander/at-astro",
