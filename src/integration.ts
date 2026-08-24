@@ -52,14 +52,25 @@ type CreateConfigOptions = {
   options?: AtAstroOptions
 }
 
-export function createConfig({ isDev, astroConfig, options }: CreateConfigOptions): AtAstroConfig {
-  const rawSite = options?.site ?? astroConfig.site
-  if (!rawSite)
+function resolveSite(site: string | undefined): string {
+  if (!site)
     throw new Error(
       "`site` is required, either on the root Astro config or in the integration options. " +
         "The site is used to generate the OAuth client metadata.",
     )
-  const siteURL = new URL(rawSite)
+  return site
+}
+
+function createSessionPrefix(
+  options: AtAstroOptions | undefined,
+  site: string | undefined,
+): string {
+  const siteURL = new URL(resolveSite(options?.site ?? site))
+  return options?.sessionPrefix ?? options?.name ?? siteURL.hostname.replace(/\./g, "-")
+}
+
+export function createConfig({ isDev, astroConfig, options }: CreateConfigOptions): AtAstroConfig {
+  const siteURL = new URL(resolveSite(options?.site ?? astroConfig.site))
   const site = siteURL.origin
   if (!astroConfig.server.host) {
     throw new Error(
@@ -68,8 +79,7 @@ export function createConfig({ isDev, astroConfig, options }: CreateConfigOption
     )
   }
   const clientUri = isDev ? `http://${astroConfig.server.host}:${astroConfig.server.port}` : site
-  const sessionPrefix =
-    options?.sessionPrefix ?? options?.name ?? siteURL.hostname.replace(/\./g, "-")
+  const sessionPrefix = createSessionPrefix(options, site)
   const redirectUri = `${clientUri}/oauth/callback`
   const scope = (["atproto", ...(options?.scopes ?? [])] satisfies AtprotoOAuthScope[]).join(" ")
 
@@ -170,14 +180,19 @@ export default function createPlugin(options?: AtAstroOptions): AstroIntegration
           prerender: false,
         })
       },
-      "astro:config:done": ({ injectTypes }) => {
+      "astro:config:done": ({ injectTypes, config }) => {
+        const sessionPrefix = createSessionPrefix(options, config.site)
+
         injectTypes({
           filename: "at-astro-locals.d.ts",
           content: `declare namespace App {
-            interface Locals {
-              getATProtoClient: import("at-astro/middleware").GetATProtoClientFn
-            }
-          }`,
+  interface Locals {
+    getATProtoClient: import("at-astro/middleware").GetATProtoClientFn
+  }
+  interface SessionData {
+    "${sessionPrefix}:did": string
+  }
+}`,
         })
       },
     },
