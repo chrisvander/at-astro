@@ -1,5 +1,10 @@
 # AT Astro
 
+[![NPM Package][npm-img]][npm-url]
+[![Build Status][build-img]][build-url]
+[![Downloads][downloads-img]][downloads-url]
+[![Issues][issues-img]][issues-url]
+
 An integration to build AT Protocol AppViews using Astro. This package implements the OAuth flow with Astro and exposes helpful
 utilities to get an authenticated ATProto client and manage sign in and sign out.
 
@@ -91,3 +96,12 @@ const { client, did } = Astro.locals.getATProtoClient()
 Outside of components, there are several APIs (middleware, actions, etc) that offer access to the `locals` object as well.
 
 The `did` will be `null` if the user is not authenticated; in that case, the client will be an unauthenticated client that can be used for read-only operations. Use `did == null` as your guard for authentication.
+
+[build-img]: https://github.com/chrisvander/at-astro/actions/workflows/release.yml/badge.svg
+[build-url]: https://github.com/chrisvander/at-astro/actions/workflows/release.yml
+[downloads-img]: https://img.shields.io/npm/dt/at-astro
+[downloads-url]: https://www.npmtrends.com/at-astro
+[npm-img]: https://img.shields.io/npm/v/at-astro
+[npm-url]: https://www.npmjs.com/package/at-astro
+[issues-img]: https://img.shields.io/github/issues/chrisvander/at-astro
+[issues-url]: https://github.com/chrisvander/at-astro/issues
