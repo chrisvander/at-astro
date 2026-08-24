@@ -72,7 +72,7 @@ function createSessionPrefix(
 export function createConfig({ isDev, astroConfig, options }: CreateConfigOptions): AtAstroConfig {
   const siteURL = new URL(resolveSite(options?.site ?? astroConfig.site))
   const site = siteURL.origin
-  if (!astroConfig.server.host) {
+  if (isDev && !astroConfig.server.host) {
     throw new Error(
       "`localhost` is not permitted as the only host. Ensure you run `astro dev --host 127.0.0.1` " +
         "to expose the dev server on a non-localhost URL.",
