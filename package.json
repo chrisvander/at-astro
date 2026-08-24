@@ -1,6 +1,6 @@
 {
   "name": "at-astro",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "description": "An Astro integration for the AT Protocol, implementing OAuth flow and publishing an authenticated client to fetch and mutate records.",
   "keywords": [
