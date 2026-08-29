@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { config } from "at-astro:config"
+
+type Props = HTMLAttributes<"div"> & {
+  /** Override the configured public AT Protocol endpoint for actor typeahead queries. */
+  endpoint?: string | URL
+}
+
+const { endpoint = config.publicEndpoint, ...attributes } = Astro.props
+---
+
+<at-astro-handle-field {...attributes} endpoint={endpoint.toString()}>
+  <slot />
+</at-astro-handle-field>
+
+<script>
+  import "./handle-field-element.mjs"
+</script>

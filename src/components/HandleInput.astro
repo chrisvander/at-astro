@@ -1,0 +1,9 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+type Props = Omit<HTMLAttributes<"input">, "name">
+
+const attributes = Astro.props
+---
+
+<input {...attributes} name="handle" data-at-handle-input />

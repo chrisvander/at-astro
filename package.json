@@ -28,6 +28,10 @@
       "types": "./dist/middleware.d.mts",
       "default": "./dist/middleware.mjs"
     },
+    "./components/HandleField": "./dist/components/HandleField.astro",
+    "./components/HandleInput": "./dist/components/HandleInput.astro",
+    "./components/HandleOptions": "./dist/components/HandleOptions.astro",
+    "./components/HandleOption": "./dist/components/HandleOption.astro",
     "./pages/*": {
       "types": "./dist/pages/*.d.mts",
       "default": "./dist/pages/*.mjs"

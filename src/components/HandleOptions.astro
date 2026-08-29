@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+type Props = HTMLAttributes<"ul">
+
+if (!Astro.slots.has("default")) {
+  throw new Error("HandleOptions requires one li template")
+}
+
+const attributes = Astro.props
+---
+
+<ul {...attributes} data-at-handle-options role="listbox" hidden>
+  <template data-at-handle-template>
+    <slot />
+  </template>
+</ul>

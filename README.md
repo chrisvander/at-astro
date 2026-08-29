@@ -69,6 +69,45 @@ To add sign in, create a sign in page and add a standard HTML form that submits 
 </form>
 ```
 
+For an unstyled handle typeahead, compose the optional components around the same native form:
+
+```astro
+---
+import HandleField from "at-astro/components/HandleField"
+import HandleInput from "at-astro/components/HandleInput"
+import HandleOption from "at-astro/components/HandleOption"
+import HandleOptions from "at-astro/components/HandleOptions"
+---
+
+<form action="/oauth/login" method="post">
+  <HandleField>
+    <label>
+      Handle
+      <HandleInput autocomplete="off" placeholder="you.bsky.social" required />
+    </label>
+
+    <HandleOptions>
+      <HandleOption>
+        <span data-at-field="displayName"></span>
+        <span>@<span data-at-field="handle"></span></span>
+      </HandleOption>
+    </HandleOptions>
+  </HandleField>
+
+  <button>Sign in</button>
+</form>
+```
+
+`HandleField` uses the integration's configured `publicEndpoint` by default. Pass `endpoint` to query a different service for this field:
+
+```astro
+<HandleField endpoint="https://another-appview.example.com">
+  <!-- HandleInput and HandleOptions -->
+</HandleField>
+```
+
+The single child of `HandleOptions` is an inert native template that is cloned for each suggestion. Bind returned actor fields with `data-at-field="did"`, `data-at-field="handle"`, `data-at-field="displayName"`, or `data-at-field="avatar"`; the avatar binding must be placed on an `<img>`. `HandleField` reports `data-state="idle"`, `loading`, `success`, `empty`, or `error` on its root element so application CSS can respond without coupling to the implementation. The components add no styles, and the submitted value remains an ordinary `input[name="handle"]`. Suggestions are optional and do not restrict which handles can be submitted.
+
 Sign out is just as simple:
 
 ```html
