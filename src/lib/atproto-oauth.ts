@@ -3,6 +3,7 @@ import { WebcryptoKey } from "@atproto/jwk-webcrypto"
 import type { SimpleStore } from "@atproto-labs/simple-store"
 import { config } from "at-astro:config"
 import type { AtAstroSession } from "../types/session.ts"
+import { createOAuthFetchOptions, type Fetch } from "./workerd-fetch.ts"
 
 async function importDpopKey(jwk: JsonWebKey) {
   if (jwk.kty !== "EC" || jwk.crv !== "P-256" || !jwk.d) {
@@ -45,11 +46,16 @@ function oauthStore<T extends { dpopKey: Key }>(
   }
 }
 
-export function getOAuthClient(session: AtAstroSession) {
+export function getOAuthClient(
+  session: AtAstroSession,
+  fetch: Fetch = globalThis.fetch,
+  patchRedirects = config.patchRedirects,
+) {
   return new OAuthClient({
     responseMode: "query",
     clientMetadata: config.clientMetadata,
     handleResolver: config.handleResolver,
+    ...createOAuthFetchOptions(fetch, patchRedirects),
     stateStore: oauthStore(config.oauthStatePrefix, session, 3600),
     sessionStore: oauthStore(config.oauthSessionPrefix, session),
     runtimeImplementation: {

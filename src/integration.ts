@@ -15,6 +15,7 @@ export type AtAstroConfig = {
   oauthSessionPrefix: string
   handleResolver: string
   publicEndpoint: string
+  patchRedirects?: boolean
   redirectAfterSignIn: string
   redirectAfterSignOut: string
 }
@@ -40,6 +41,8 @@ export type AtAstroOptions = {
    * @default "https://public.api.bsky.app"
    */
   publicEndpoint?: string
+  /** Force-enable or disable the OAuth redirect compatibility patch; defaults to runtime detection. */
+  patchRedirects?: boolean
   /** The path to redirect to after the user successfully signs in (defaults to the site's root) */
   redirectAfterSignIn?: `/${string}`
   /** The path to redirect to after the user successfully signs out (defaults to the site's root) */
@@ -104,6 +107,7 @@ export function createConfig({ isDev, astroConfig, options }: CreateConfigOption
     oauthSessionPrefix: `${sessionPrefix}:oauth-session:`,
     handleResolver: options?.handleResolver ?? "https://bsky.social",
     publicEndpoint: options?.publicEndpoint ?? "https://public.api.bsky.app",
+    patchRedirects: options?.patchRedirects,
     redirectAfterSignIn: `${clientUri}${options?.redirectAfterSignIn ?? ""}`,
     redirectAfterSignOut: `${clientUri}${options?.redirectAfterSignOut ?? ""}`,
   }

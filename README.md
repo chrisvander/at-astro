@@ -46,6 +46,10 @@ export default defineConfig({
 })
 ```
 
+AT Astro detects runtimes that reject `RequestInit.redirect: "error"` and applies a scoped
+OAuth fetch compatibility patch automatically. Set `patchRedirects: true` or `false` only to
+force or disable that behavior for a runtime whose capability detection is inaccurate.
+
 ## Usage
 
 ### Routes
