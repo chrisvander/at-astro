@@ -132,7 +132,7 @@ After OAuth, you will have access to an authenticated ATProto client using the `
 
 ```astro
 ---
-const { client, did } = Astro.locals.getATProtoClient()
+const { client, did, handle } = await Astro.locals.getATProtoClient()
 ---
 ```
 

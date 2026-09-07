@@ -8,6 +8,7 @@ function getPublicClient() {
   return {
     client: new Client(config.publicEndpoint, { validateRequest: import.meta.env.DEV }),
     did: null,
+    handle: null,
   }
 }
 
@@ -20,13 +21,18 @@ export async function getClient(session: AtAstroSession | undefined): Promise<{
   client: Client
   /** The DID of the authenticated user, or null if the user is not signed in. */
   did: string | null
+  /** The resolved handle, `handle.invalid` if unverified, or null when signed out. */
+  handle: string | null
 }> {
   const did = await session?.get(config.didSessionKey)
   if (!session || !did) return getPublicClient()
 
   try {
-    const oauthSession = await getOAuthClient(session).restore(did)
-    return { client: new Client(oauthSession, { validateRequest: import.meta.env.DEV }), did }
+    const oauthClient = getOAuthClient(session)
+    const oauthSession = await oauthClient.restore(did)
+    const client = new Client(oauthSession, { validateRequest: import.meta.env.DEV })
+    const { handle } = await oauthClient.identityResolver.resolve(did)
+    return { client, did, handle: handle == "handle.invalid" ? null : handle }
   } catch (error) {
     if (!(error instanceof OAuthResolverError)) throw error
     console.error("Failed to restore AT Protocol session", error)
