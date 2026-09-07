@@ -152,6 +152,13 @@ export default function createPlugin(options?: AtAstroOptions): AstroIntegration
                 "at-astro:config": fileURLToPath(configFile),
               },
             },
+            environments: {
+              ssr: {
+                optimizeDeps: {
+                  include: ["at-astro/pages/**", "at-astro > @atproto/oauth-client"],
+                },
+              },
+            },
           },
         })
 

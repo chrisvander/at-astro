@@ -9,8 +9,5 @@ export default defineConfig({
     "./src/components/handle-field-element.ts",
   ],
   copy: [{ from: "src/components/*.astro", to: "dist/components" }],
-  deps: {
-    neverBundle: ["at-astro:config"],
-    alwaysBundle: ["@atproto/jwk-webcrypto", "@atproto/oauth-client"],
-  },
+  deps: { neverBundle: ["at-astro:config"] },
 })
