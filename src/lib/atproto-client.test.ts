@@ -1,5 +1,5 @@
 import { beforeEach, expect, mock, spyOn, test } from "bun:test"
-import { OAuthResolverError } from "@atproto/oauth-client"
+import { OAuthResolverError, TokenRefreshError } from "@atproto/oauth-client"
 import type { AtAstroSession } from "../types/session"
 
 const restore = mock()
@@ -12,6 +12,7 @@ beforeEach(() => {
 void mock.module("at-astro:config", () => ({
   config: {
     didSessionKey: "at-astro:did",
+    oauthSessionPrefix: "at-astro:oauth:",
     publicEndpoint: "https://public.api.bsky.app",
   },
 }))
@@ -71,4 +72,27 @@ test("does not report a handle lookup failure as a signed-out session", async ()
   const error = new Error("Identity lookup failed")
   resolve.mockRejectedValueOnce(error)
   expect(getClient(session)).rejects.toBe(error)
+})
+
+test("clears a deleted OAuth session and returns a public client", async () => {
+  const values = new Map<string, string>([
+    ["at-astro:did", "did:plc:test"],
+    ["at-astro:oauth:did:plc:test", "stale credentials"],
+    ["preference", "keep"],
+  ])
+  const storedSession = {
+    get: async (key: string) => values.get(key),
+    delete: (key: string) => {
+      values.delete(key)
+    },
+  } as unknown as AtAstroSession
+  restore.mockRejectedValueOnce(
+    new TokenRefreshError("did:plc:test", "The session was deleted by another process"),
+  )
+
+  expect(await getClient(storedSession)).toMatchObject({ did: null, handle: null })
+  expect([...values]).toEqual([["preference", "keep"]])
+  expect(resolve).not.toHaveBeenCalled()
+  expect(await getClient(storedSession)).toMatchObject({ did: null, handle: null })
+  expect(restore).toHaveBeenCalledTimes(1)
 })

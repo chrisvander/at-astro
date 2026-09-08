@@ -1,5 +1,5 @@
 import { Client } from "@atproto/lex"
-import { OAuthResolverError } from "@atproto/oauth-client"
+import { OAuthResolverError, TokenRefreshError } from "@atproto/oauth-client"
 import { getOAuthClient } from "./atproto-oauth"
 import { config } from "at-astro:config"
 import type { AtAstroSession } from "../types/session"
@@ -34,6 +34,11 @@ export async function getClient(session: AtAstroSession | undefined): Promise<{
     const { handle } = await oauthClient.identityResolver.resolve(did)
     return { client, did, handle: handle == "handle.invalid" ? null : handle }
   } catch (error) {
+    if (error instanceof TokenRefreshError) {
+      session.delete(config.didSessionKey)
+      session.delete(`${config.oauthSessionPrefix}${did}`)
+      return getPublicClient()
+    }
     if (!(error instanceof OAuthResolverError)) throw error
     console.error("Failed to restore AT Protocol session", error)
     return getPublicClient()
